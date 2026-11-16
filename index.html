@@ -1,0 +1,98 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Event Explorer</title>
+</head>
+<body>
+
+<h2>Event Explorer</h2>
+
+<input type="text" id="search" placeholder="Search Event">
+
+<select id="category">
+    <option value="All">All Categories</option>
+    <option value="Technical">Technical</option>
+    <option value="Sports">Sports</option>
+    <option value="Cultural">Cultural</option>
+</select>
+
+<input type="date" id="date">
+
+<select id="sort">
+    <option value="asc">Oldest First</option>
+    <option value="desc">Newest First</option>
+</select>
+
+<div id="events"></div>
+
+<script>
+
+// Array of JSON objects
+let events = [
+    {name: "Coding Competition", category: "Technical", date: "2026-12-10"},
+    {name: "Cricket Match", category: "Sports", date: "2026-12-15"},
+    {name: "Dance Festival", category: "Cultural", date: "2026-12-20"},
+    {name: "Web Workshop", category: "Technical", date: "2026-12-25"}
+];
+
+// Display Events
+function display(list) {
+
+    let output = "";
+
+    if (list.length == 0) {
+        output = "<h3>No Results Found</h3>";
+    }
+    else {
+        list.forEach(function(e) {
+            output += `
+                <div style="border:1px solid black; margin:10px; padding:10px;">
+                    <h3>${e.name}</h3>
+                    <p>Category: ${e.category}</p>
+                    <p>Date: ${e.date}</p>
+                </div>
+            `;
+        });
+    }
+
+    document.getElementById("events").innerHTML = output;
+}
+
+// Search, Filter and Sort
+function update() {
+
+    let s = document.getElementById("search").value.toLowerCase();
+    let c = document.getElementById("category").value;
+    let d = document.getElementById("date").value;
+    let order = document.getElementById("sort").value;
+
+    let result = events.filter(function(e) {
+        return e.name.toLowerCase().includes(s) &&
+        (c == "All" || e.category == c) &&
+        (d == "" || e.date == d);
+    });
+
+    // Sorting by date
+    result.sort(function(a, b) {
+        return order == "asc"
+            ? a.date.localeCompare(b.date)
+            : b.date.localeCompare(a.date);
+    });
+
+    display(result);
+}
+
+// Event Listeners
+document.getElementById("search").addEventListener("input", update);
+document.getElementById("category").addEventListener("change", update);
+document.getElementById("date").addEventListener("change", update);
+document.getElementById("sort").addEventListener("change", update);
+
+// Initial display
+display(events);
+
+</script>
+
+</body>
+</html>
